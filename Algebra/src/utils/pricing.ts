@@ -11,10 +11,20 @@ const USDC_WMatic_03_POOL = '0x521aa84ab3fcc4c05cabac24dc3682339887b126'
 // usually tokens that many tokens are paired with s
 export let WHITELIST_TOKENS: string[] = [
   '0x82af49447d8a07e3bd95bd0d56f35241523fbab1', // WETH
-  '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', // USDC
+  '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', // USDC.e
+  '0xaf88d065e77c8cc2239327c5edb3a432268e5831', // USDC
   '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9', // USDT
   '0x3d9907f9a368ad0a51be60f7da3b97cf940982d8', // GRAIL
-  '0x912ce59144191c1204e64559fe8253a0e49e6548' // ARB
+  '0x912ce59144191c1204e64559fe8253a0e49e6548', // ARB
+  '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1', // DAI
+  '0xd74f5255d557944cf7dd0e45ff521520002d5748', // USDs
+  '0x1622bf67e6e5747b81866fe0b85178a93c7f86e3', // UMAMI
+  '0x6c2c06790b3e3e3c38e12ee22f8183b37a13ee55', // DPX
+  '0x5979d7b546e38e414f7e9822514be443a4800529', // wstETH
+  '0x6cda1d3d092811b2d48f7476adb59a6239ca9b95', // stafi-rETH
+  '0x0ae38f7e10a43b5b2fb064b42a2f4514cba909ef', // unsheth
+  '0x0c880f6761f1af8d9aa9c466984b80dab9a8c9e8', // PENDLE
+  '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a', // GMX
 ]
 
 let MINIMUM_Matic_LOCKED = BigDecimal.fromString('0.01')
@@ -22,8 +32,11 @@ let MINIMUM_Matic_LOCKED = BigDecimal.fromString('0.01')
 let Q192 = Math.pow(2, 192)
 
 let STABLE_COINS: string[] = [
-  '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', // USDC
-  '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9' // USDT
+  '0xaf88d065e77c8cc2239327c5edb3a432268e5831', // USDC
+  '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', // USDC.e
+  '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9', // USDT
+  '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1', // DAI
+  '0xd74f5255d557944cf7dd0e45ff521520002d5748', // USDs
 ]
 
 

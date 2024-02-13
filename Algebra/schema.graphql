@@ -201,8 +201,8 @@ type Tick @entity {
 type PoolPosition @entity {
   id: ID!
   pool: Pool!
-  lowerTick: Tick!
-  upperTick: Tick!
+  tickLower: Tick!
+  tickUpper: Tick!
   owner: Bytes!
   liquidity: BigInt!
 }

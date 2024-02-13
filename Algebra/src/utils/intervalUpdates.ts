@@ -95,12 +95,12 @@ export function updatePoolDayData(event: ethereum.Event): PoolDayData {
 
 export function updateFeeHourData(event: ethereum.Event, feeZtO: BigInt, feeOtZ: BigInt): void{
   let timestamp = event.block.timestamp.toI32()
-  let hourIndex = timestamp / 3600 
+  let hourIndex = timestamp / 3600
   let hourStartUnix = hourIndex * 3600
   let hourFeeID = event.address
-    .toHexString()
-    .concat('-')
-    .concat(hourIndex.toString())
+      .toHexString()
+      .concat('-')
+      .concat(hourIndex.toString())
   let FeeHourDataEntity = FeeHourData.load(hourFeeID)
   if(FeeHourDataEntity){
     FeeHourDataEntity.timestamp = BigInt.fromI32(hourStartUnix)
@@ -108,7 +108,7 @@ export function updateFeeHourData(event: ethereum.Event, feeZtO: BigInt, feeOtZ:
     FeeHourDataEntity.feeOtZ += feeOtZ
     FeeHourDataEntity.changesCount += ONE_BI
     if(FeeHourDataEntity.maxFee < feeZtO) FeeHourDataEntity.maxFee = feeZtO
-    if(FeeHourDataEntity.minFee > feeZtO) FeeHourDataEntity.minFee = feeZtO  
+    if(FeeHourDataEntity.minFee > feeZtO) FeeHourDataEntity.minFee = feeZtO
     FeeHourDataEntity.endFee = feeZtO
   }
   else{
@@ -121,7 +121,7 @@ export function updateFeeHourData(event: ethereum.Event, feeZtO: BigInt, feeOtZ:
       FeeHourDataEntity.startFee = feeZtO
       FeeHourDataEntity.endFee = feeZtO
       FeeHourDataEntity.maxFee = feeZtO 
-      FeeHourDataEntity.minFee = feeZtO 
+      FeeHourDataEntity.minFee = feeZtO
     }
 
   }

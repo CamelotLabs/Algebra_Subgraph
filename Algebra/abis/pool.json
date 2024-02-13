@@ -759,6 +759,56 @@
   {
     "inputs": [
       {
+        "internalType": "int24",
+        "name": "newTickSpacing",
+        "type": "int24"
+      },
+      {
+        "internalType": "int24",
+        "name": "newTickspacingLimitOrders",
+        "type": "int24"
+      }
+    ],
+    "name": "setTickSpacing",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "int24",
+        "name": "newTickSpacing",
+        "type": "int24"
+      },
+      {
+        "indexed": false,
+        "internalType": "int24",
+        "name": "newTickSpacingLimitOrders",
+        "type": "int24"
+      }
+    ],
+    "name": "TickSpacing",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "tickSpacing",
+    "outputs": [
+      {
+        "internalType": "int24",
+        "name": "",
+        "type": "int24"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "virtualPoolAddress",
         "type": "address"
