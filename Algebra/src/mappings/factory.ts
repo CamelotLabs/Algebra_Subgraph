@@ -1,12 +1,11 @@
-import { WHITELIST_TOKENS } from './../utils/pricing'
 /* eslint-disable prefer-const */
-import { FACTORY_ADDRESS, ZERO_BI, ONE_BI, ZERO_BD, ADDRESS_ZERO, pools_list} from './../utils/constants'
+import { WHITELIST_TOKENS, FACTORY_ADDRESS, ZERO_BI, ONE_BI, ZERO_BD, ADDRESS_ZERO, pools_list } from './../utils/constants'
 import { Factory } from '../types/schema'
 import { Pool as PoolEvent, DefaultCommunityFee } from '../types/Factory/Factory'
 import { Pool, Token, Bundle } from '../types/schema'
-import { Pool as PoolTemplate} from '../types/templates'
+import { Pool as PoolTemplate } from '../types/templates'
 import { fetchTokenSymbol, fetchTokenName, fetchTokenTotalSupply, fetchTokenDecimals } from '../utils/token'
-import { log,BigInt } from '@graphprotocol/graph-ts'
+import { log, BigInt } from '@graphprotocol/graph-ts'
 
 export function handlePoolCreated(event: PoolEvent): void {
   // temp fix
@@ -37,7 +36,7 @@ export function handlePoolCreated(event: PoolEvent): void {
   factory.poolCount = factory.poolCount.plus(ONE_BI)
 
   let pool = new Pool(event.params.pool.toHexString()) as Pool
-  
+
   let token0_address = event.params.token0
   let token1_address = event.params.token1
 
@@ -45,12 +44,12 @@ export function handlePoolCreated(event: PoolEvent): void {
   let token1 = Token.load(token1_address.toHexString())
 
 
-  if(pools_list.includes(event.params.pool.toHexString())){
+  if (pools_list.includes(event.params.pool.toHexString())) {
     token0 = Token.load(event.params.token1.toHexString())
     token1 = Token.load(event.params.token0.toHexString())
     token0_address = event.params.token1
-    token1_address = event.params.token0  
-  }  
+    token1_address = event.params.token0
+  }
 
   // fetch info if null
   if (token0 === null) {

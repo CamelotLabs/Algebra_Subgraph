@@ -1,28 +1,23 @@
 /* eslint-disable prefer-const */
-import { ONE_BD, ZERO_BD, ZERO_BI } from './constants'
+import {
+  WRAPPED_NATIVE,
+  USDC_WMatic_03_POOL,
+  WHITELIST_TOKENS,
+  STABLE_COINS,
+  ONE_BD,
+  ZERO_BD,
+  ZERO_BI
+} from './constants'
 import { Bundle, Pool, Token } from './../types/schema'
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { exponentToBigDecimal, safeDiv } from '../utils/index'
 
-const WMatic_ADDRESS = '0x82af49447d8a07e3bd95bd0d56f35241523fbab1'
-const USDC_WMatic_03_POOL = '0xb7dd20f3fbf4db42fd85c839ac0241d09f72955f'
-
 // token where amounts should contribute to tracked volume and liquidity
 // usually tokens that many tokens are paired with s
-export let WHITELIST_TOKENS: string[] = [
-  '0x82af49447d8a07e3bd95bd0d56f35241523fbab1', // WMATIC
-  '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', // USDC
-  '0x3d9907f9a368ad0a51be60f7da3b97cf940982d8' // CAMELOT
-]
 
 let MINIMUM_Matic_LOCKED = BigDecimal.fromString('0')
 
 let Q192 = Math.pow(2, 192)
-
-let STABLE_COINS: string[] = [
-  '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', // USDC
-  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f' // SUDT
-]
 
 
 export function priceToTokenPrices(price: BigInt, token0: Token, token1: Token): BigDecimal[] {
@@ -44,7 +39,7 @@ export function getEthPriceInUSD(): BigDecimal {
   } else {
     return ZERO_BD
   }
-} 
+}
 
 
 /**
@@ -52,7 +47,7 @@ export function getEthPriceInUSD(): BigDecimal {
  * @todo update to be derived Matic (add stablecoin estimates)
  **/
 export function findEthPerToken(token: Token): BigDecimal {
-  if (token.id == WMatic_ADDRESS) {
+  if (token.id == WRAPPED_NATIVE) {
     return ONE_BD
   }
   let whiteList = token.whitelistPools
@@ -67,35 +62,35 @@ export function findEthPerToken(token: Token): BigDecimal {
   if (STABLE_COINS.includes(token.id)) {
     priceSoFar = safeDiv(ONE_BD, bundle!.maticPriceUSD)
   } else {
-  for (let i = 0; i < whiteList.length; ++i) {
-    let poolAddress = whiteList[i]
-    let pool = Pool.load(poolAddress)!
-    if (pool.liquidity.gt(ZERO_BI)) {
+    for (let i = 0; i < whiteList.length; ++i) {
+      let poolAddress = whiteList[i]
+      let pool = Pool.load(poolAddress)!
+      if (pool.liquidity.gt(ZERO_BI)) {
 
-      if (pool.token0 == token.id) {
-        // whitelist token is token1
-        let token1 = Token.load(pool.token1)!
-        // get the derived Matic in pool
-        let maticLocked = pool.totalValueLockedToken1.times(token1.derivedMatic)
-        if (maticLocked.gt(largestLiquidityMatic) && maticLocked.gt(MINIMUM_Matic_LOCKED)) {
-          largestLiquidityMatic = maticLocked
-          // token1 per our token * Eth per token1
-          priceSoFar = pool.token1Price.times(token1.derivedMatic as BigDecimal)
+        if (pool.token0 == token.id) {
+          // whitelist token is token1
+          let token1 = Token.load(pool.token1)!
+          // get the derived Matic in pool
+          let maticLocked = pool.totalValueLockedToken1.times(token1.derivedMatic)
+          if (maticLocked.gt(largestLiquidityMatic) && maticLocked.gt(MINIMUM_Matic_LOCKED)) {
+            largestLiquidityMatic = maticLocked
+            // token1 per our token * Eth per token1
+            priceSoFar = pool.token1Price.times(token1.derivedMatic as BigDecimal)
+          }
         }
-      }
-      if (pool.token1 == token.id) {
-        let token0 = Token.load(pool.token0)!
-        // get the derived Matic in pool
-        let maticLocked = pool.totalValueLockedToken0.times(token0.derivedMatic)
-        if (maticLocked.gt(largestLiquidityMatic) && maticLocked.gt(MINIMUM_Matic_LOCKED)) {
-          largestLiquidityMatic = maticLocked
-          // token0 per our token * Matic per token0
-          priceSoFar = pool.token0Price.times(token0.derivedMatic as BigDecimal)
+        if (pool.token1 == token.id) {
+          let token0 = Token.load(pool.token0)!
+          // get the derived Matic in pool
+          let maticLocked = pool.totalValueLockedToken0.times(token0.derivedMatic)
+          if (maticLocked.gt(largestLiquidityMatic) && maticLocked.gt(MINIMUM_Matic_LOCKED)) {
+            largestLiquidityMatic = maticLocked
+            // token0 per our token * Matic per token0
+            priceSoFar = pool.token0Price.times(token0.derivedMatic as BigDecimal)
+          }
         }
       }
     }
   }
-}
   return priceSoFar // nothing was found return 0
 }
 

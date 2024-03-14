@@ -1,4 +1,4 @@
-import { ZERO_BD, ZERO_BI, ONE_BI } from './constants'
+import { FACTORY_ADDRESS, ZERO_BD, ZERO_BI, ONE_BI } from './constants'
 /* eslint-disable prefer-const */
 import {
   AlgebraDayData,
@@ -14,7 +14,6 @@ import {
   FeeHourData,
   Tick
 } from './../types/schema'
-import { FACTORY_ADDRESS } from './constants'
 import { ethereum, BigInt } from '@graphprotocol/graph-ts'
 
 
@@ -93,35 +92,35 @@ export function updatePoolDayData(event: ethereum.Event): PoolDayData {
   return poolDayData as PoolDayData
 }
 
-export function updateFeeHourData(event: ethereum.Event, feeZtO: BigInt, feeOtZ: BigInt): void{
+export function updateFeeHourData(event: ethereum.Event, feeZtO: BigInt, feeOtZ: BigInt): void {
   let timestamp = event.block.timestamp.toI32()
-  let hourIndex = timestamp / 3600 
+  let hourIndex = timestamp / 3600
   let hourStartUnix = hourIndex * 3600
   let hourFeeID = event.address
     .toHexString()
     .concat('-')
     .concat(hourIndex.toString())
   let FeeHourDataEntity = FeeHourData.load(hourFeeID)
-  if(FeeHourDataEntity){
+  if (FeeHourDataEntity) {
     FeeHourDataEntity.timestamp = BigInt.fromI32(hourStartUnix)
     FeeHourDataEntity.feeZtO += feeZtO
     FeeHourDataEntity.feeOtZ += feeOtZ
     FeeHourDataEntity.changesCount += ONE_BI
-    if(FeeHourDataEntity.maxFee < feeZtO) FeeHourDataEntity.maxFee = feeZtO
-    if(FeeHourDataEntity.minFee > feeZtO) FeeHourDataEntity.minFee = feeZtO  
+    if (FeeHourDataEntity.maxFee < feeZtO) FeeHourDataEntity.maxFee = feeZtO
+    if (FeeHourDataEntity.minFee > feeZtO) FeeHourDataEntity.minFee = feeZtO
     FeeHourDataEntity.endFee = feeZtO
   }
-  else{
+  else {
     FeeHourDataEntity = new FeeHourData(hourFeeID)
     FeeHourDataEntity.timestamp = BigInt.fromI32(hourStartUnix)
     FeeHourDataEntity.feeZtO = feeZtO
     FeeHourDataEntity.changesCount = ONE_BI
     FeeHourDataEntity.pool = event.address.toHexString()
-    if(feeZtO != ZERO_BI){
+    if (feeZtO != ZERO_BI) {
       FeeHourDataEntity.startFee = feeZtO
       FeeHourDataEntity.endFee = feeZtO
-      FeeHourDataEntity.maxFee = feeZtO 
-      FeeHourDataEntity.minFee = feeZtO 
+      FeeHourDataEntity.maxFee = feeZtO
+      FeeHourDataEntity.minFee = feeZtO
     }
 
   }
