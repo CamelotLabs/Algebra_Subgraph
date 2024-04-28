@@ -101,7 +101,7 @@ type Pool @entity {
   # token1 per token0
   token1Price: BigDecimal!
   # current tick
-  tick: BigInt!
+  tick: BigInt
   # current observation index
   observationIndex: BigInt!
   # all time token0 swapped

@@ -70,6 +70,8 @@ export function updatePoolDayData(event: ethereum.Event): PoolDayData {
     poolDayData.high = pool.token0Price
     poolDayData.low = pool.token0Price
     poolDayData.close = pool.token0Price
+    poolDayData.feesToken0 = ZERO_BD
+    poolDayData.feesToken1 = ZERO_BD
   }
 
   if (pool.token0Price.gt(poolDayData.high)) {
@@ -117,6 +119,8 @@ export function updateFeeHourData(event: ethereum.Event, feeZtO: BigInt, feeOtZ:
     FeeHourDataEntity.feeZtO = feeZtO
     FeeHourDataEntity.changesCount = ONE_BI
     FeeHourDataEntity.pool = event.address.toHexString()
+    FeeHourDataEntity.feeOtZ = ZERO_BI
+    FeeHourDataEntity.feeZtO = ZERO_BI
     if(feeZtO != ZERO_BI){
       FeeHourDataEntity.startFee = feeZtO
       FeeHourDataEntity.endFee = feeZtO
