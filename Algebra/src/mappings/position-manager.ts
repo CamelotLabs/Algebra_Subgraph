@@ -7,7 +7,7 @@ import {
   Transfer
 } from '../types/NonfungiblePositionManager/NonfungiblePositionManager'
 import { Position, PositionSnapshot, Token} from '../types/schema'
-import { ADDRESS_ZERO, factoryContract, ZERO_BD, ZERO_BI, pools_list} from '../utils/constants'
+import { ADDRESS_ZERO, factoryContract, ZERO_BD, ZERO_BI, poolsList} from '../utils/constants'
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { convertTokenToDecimal, loadTransaction } from '../utils'
 
@@ -32,7 +32,7 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
       // The owner gets correctly updated in the Transfer handler
       position.owner = Address.fromString(ADDRESS_ZERO)
       position.pool = poolAddress.toHexString()
-      if(pools_list.includes(position.pool)){
+      if(poolsList.includes(position.pool)){
         position.token0 = positionResult.value3.toHexString()
         position.token1 = positionResult.value2.toHexString()
       }
@@ -84,7 +84,7 @@ function savePositionSnapshot(position: Position, event: ethereum.Event): void {
   positionSnapshot.timestamp = event.block.timestamp
   positionSnapshot.liquidity = position.liquidity
 
-  if(pools_list.includes(position.pool)){
+  if(poolsList.includes(position.pool)){
     positionSnapshot.depositedToken0 = position.depositedToken1
     positionSnapshot.depositedToken1 = position.depositedToken0
     positionSnapshot.withdrawnToken0 = position.withdrawnToken1
@@ -127,12 +127,12 @@ export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
   let amount1 = ZERO_BD
   let amount0 = ZERO_BD
 
-    if(pools_list.includes(position.pool))
+    if(poolsList.includes(position.pool))
       amount0 = convertTokenToDecimal(event.params.amount1, token0!.decimals)
     else
       amount0 = convertTokenToDecimal(event.params.amount0, token0!.decimals)
 
-    if(pools_list.includes(position.pool))
+    if(poolsList.includes(position.pool))
       amount1 = convertTokenToDecimal(event.params.amount0, token1!.decimals)
     else
       amount1 = convertTokenToDecimal(event.params.amount1, token1!.decimals)
@@ -166,13 +166,13 @@ export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
   let amount1 = ZERO_BD
   let amount0 = ZERO_BD
 
-    if(pools_list.includes(position.pool))
+    if(poolsList.includes(position.pool))
       amount0 = convertTokenToDecimal(event.params.amount1, token0!.decimals)
     else
       amount0 = convertTokenToDecimal(event.params.amount0, token0!.decimals)
   
 
-    if(pools_list.includes(position.pool))
+    if(poolsList.includes(position.pool))
       amount1 = convertTokenToDecimal(event.params.amount0, token1!.decimals)
     else
       amount1 = convertTokenToDecimal(event.params.amount1, token1!.decimals)
@@ -207,13 +207,13 @@ export function handleCollect(event: Collect): void {
   let amount0 = ZERO_BD
 
 
-    if(pools_list.includes(position.pool))
+    if(poolsList.includes(position.pool))
       amount0 = convertTokenToDecimal(event.params.amount1, token0!.decimals)
     else
       amount0 = convertTokenToDecimal(event.params.amount0, token0!.decimals)
   
   
-    if(pools_list.includes(position.pool))
+    if(poolsList.includes(position.pool))
       amount1 = convertTokenToDecimal(event.params.amount0, token1!.decimals)
     else
       amount1 = convertTokenToDecimal(event.params.amount1, token1!.decimals)

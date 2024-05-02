@@ -205,6 +205,10 @@ type PoolPosition @entity {
   tickUpper: Tick!
   owner: Bytes!
   liquidity: BigInt!
+  uncollectedBurnedAmount0: BigDecimal!
+  uncollectedBurnedAmount1: BigDecimal!
+  collectedFeesToken0: BigDecimal!
+  collectedFeesToken1: BigDecimal!
 }
 
 type Position @entity {

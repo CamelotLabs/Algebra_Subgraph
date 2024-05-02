@@ -14,7 +14,7 @@ import {
   TickSpacing
 } from '../types/templates/Pool/Pool'
 import {convertTokenToDecimal, loadTransaction, safeDiv} from '../utils'
-import {FACTORY_ADDRESS, ONE_BI, ZERO_BD, ZERO_BI, pools_list, TICK_SPACING} from '../utils/constants'
+import {FACTORY_ADDRESS, ONE_BI, ZERO_BD, ZERO_BI, poolsList, TICK_SPACING} from '../utils/constants'
 import {findEthPerToken, getEthPriceInUSD, getTrackedAmountUSD, priceToTokenPrices} from '../utils/pricing'
 import {
   updatePoolDayData,
@@ -26,6 +26,32 @@ import {
   updateFeeHourData
 } from '../utils/intervalUpdates'
 import {createTick} from '../utils/tick'
+
+
+function updateTickFeeVarsAndSave(tick: Tick, event: ethereum.Event): void {
+  let poolAddress = event.address
+  // not all ticks are initialized so obtaining null is expected behavior
+  let poolContract = PoolABI.bind(poolAddress)
+
+  let tickResult = poolContract.ticks(tick.tickIdx.toI32())
+  tick.feeGrowthOutside0X128 = tickResult.value2
+  tick.feeGrowthOutside1X128 = tickResult.value3
+  tick.save()
+  updateTickDayData(tick, event)
+}
+
+function loadTickUpdateFeeVarsAndSave(tickId: i32, event: ethereum.Event): void {
+  let poolAddress = event.address
+  let tick = Tick.load(
+    poolAddress
+      .toHexString()
+      .concat('#')
+      .concat(tickId.toString())
+  )
+  if (tick !== null) {
+    updateTickFeeVarsAndSave(tick, event)
+  }
+}
 
 export function handleInitialize(event: Initialize): void {
   let pool = Pool.load(event.address.toHexString())!
@@ -64,7 +90,7 @@ export function handleMint(event: MintEvent): void {
   let amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
   let amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
 
-  if (pools_list.includes(event.address.toHexString())) {
+  if (poolsList.includes(event.address.toHexString())) {
 
     amount0 = convertTokenToDecimal(event.params.amount1, token0.decimals)
     amount1 = convertTokenToDecimal(event.params.amount0, token1.decimals)
@@ -166,6 +192,10 @@ export function handleMint(event: MintEvent): void {
     poolPosition.tickUpper = upperTick.id
     poolPosition.liquidity = event.params.liquidityAmount
     poolPosition.owner = event.params.owner
+    poolPosition.uncollectedBurnedAmount0 = ZERO_BD
+    poolPosition.uncollectedBurnedAmount1 = ZERO_BD
+    poolPosition.collectedFeesToken0 = ZERO_BD
+    poolPosition.collectedFeesToken1 = ZERO_BD
   }
 
   // TODO: Update Tick's volume, fees, and liquidity provider count
@@ -204,7 +234,7 @@ export function handleBurn(event: BurnEvent): void {
   let amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
   let amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
 
-  if (pools_list.includes(event.address.toHexString())) {
+  if (poolsList.includes(event.address.toHexString())) {
 
     amount0 = convertTokenToDecimal(event.params.amount1, token0.decimals)
     amount1 = convertTokenToDecimal(event.params.amount0, token1.decimals)
@@ -287,6 +317,8 @@ export function handleBurn(event: BurnEvent): void {
   let poolPosition = PoolPosition.load(poolPositionid)
   if (poolPosition) {
     poolPosition.liquidity = poolPosition.liquidity.minus(event.params.liquidityAmount)
+    poolPosition.uncollectedBurnedAmount0 = poolPosition.uncollectedBurnedAmount0.plus(amount0)
+    poolPosition.uncollectedBurnedAmount1 = poolPosition.uncollectedBurnedAmount1.plus(amount1)
     poolPosition.save()
   }
 
@@ -323,7 +355,7 @@ export function handleSwap(event: SwapEvent): void {
   let amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
   let amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
 
-  if (pools_list.includes(event.address.toHexString())) {
+  if (poolsList.includes(event.address.toHexString())) {
 
     amount0 = convertTokenToDecimal(event.params.amount1, token0.decimals)
     amount1 = convertTokenToDecimal(event.params.amount0, token1.decimals)
@@ -424,7 +456,7 @@ export function handleSwap(event: SwapEvent): void {
   pool.token0Price = prices[0]
   pool.token1Price = prices[1]
 
-  if (pools_list.includes(event.address.toHexString())) {
+  if (poolsList.includes(event.address.toHexString())) {
     prices = priceToTokenPrices(pool.sqrtPrice, token1 as Token, token0 as Token)
     pool.token0Price = prices[1]
     pool.token1Price = prices[0]
@@ -595,10 +627,18 @@ export function handleCollect(event: Collect): void {
   let pool = Pool.load(poolAddress)!
   let factory = Factory.load(FACTORY_ADDRESS)!
 
-
   let token0 = Token.load(pool.token0)!
   let token1 = Token.load(pool.token1)!
+  let poolPositionid = pool.id + "#" + event.params.owner.toHexString() + '#' + BigInt.fromI32(event.params.bottomTick).toString() + "#" + BigInt.fromI32(event.params.topTick).toString()
+  let poolPosition = PoolPosition.load(poolPositionid)
+  if (poolPosition) {
+    poolPosition.collectedFeesToken0 = poolPosition.collectedFeesToken0.plus(convertTokenToDecimal(event.params.amount0, token0.decimals).minus(poolPosition.uncollectedBurnedAmount0))
+    poolPosition.collectedFeesToken1 = poolPosition.collectedFeesToken1.plus(convertTokenToDecimal(event.params.amount1, token1.decimals).minus(poolPosition.uncollectedBurnedAmount1))
 
+    poolPosition.uncollectedBurnedAmount0 = ZERO_BD
+    poolPosition.uncollectedBurnedAmount1 = ZERO_BD
+    poolPosition.save()
+  }
   // update globals
   factory.txCount = factory.txCount.plus(ONE_BI)
 
@@ -616,19 +656,6 @@ export function handleCollect(event: Collect): void {
   pool.save()
   factory.save()
 
-}
-
-
-function updateTickFeeVarsAndSave(tick: Tick, event: ethereum.Event): void {
-  let poolAddress = event.address
-  // not all ticks are initialized so obtaining null is expected behavior
-  let poolContract = PoolABI.bind(poolAddress)
-
-  let tickResult = poolContract.ticks(tick.tickIdx.toI32())
-  tick.feeGrowthOutside0X128 = tickResult.value2
-  tick.feeGrowthOutside1X128 = tickResult.value3
-  tick.save()
-  updateTickDayData(tick, event)
 }
 
 export function handleChangeFee(event: ChangeFee): void {
@@ -656,17 +683,4 @@ export function handleSetTickSpacing(event: TickSpacing): void {
   let pool = Pool.load(event.address.toHexString())!
   pool.tickSpacing = BigInt.fromI32(event.params.newTickSpacing)
   pool.save()
-}
-
-function loadTickUpdateFeeVarsAndSave(tickId: i32, event: ethereum.Event): void {
-  let poolAddress = event.address
-  let tick = Tick.load(
-    poolAddress
-      .toHexString()
-      .concat('#')
-      .concat(tickId.toString())
-  )
-  if (tick !== null) {
-    updateTickFeeVarsAndSave(tick, event)
-  }
 }

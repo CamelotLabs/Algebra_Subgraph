@@ -15,4 +15,4 @@ export let TICK_SPACING = BigInt.fromI32(1)
 
 export let factoryContract = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS))
 
-export let pools_list = [""]
+export let poolsList = [""]
