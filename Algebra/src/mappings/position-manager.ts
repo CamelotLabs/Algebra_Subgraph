@@ -6,16 +6,35 @@ import {
   NonfungiblePositionManager,
   Transfer
 } from '../types/NonfungiblePositionManager/NonfungiblePositionManager'
-import { Position, PositionSnapshot, Token} from '../types/schema'
+import { Position, PositionSnapshot, Token, User, PoolUser } from '../types/schema'
 import { ADDRESS_ZERO, factoryContract, ZERO_BD, ZERO_BI, poolsList} from '../utils/constants'
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { convertTokenToDecimal, loadTransaction } from '../utils'
+import { getEthPriceInUSD } from '../utils/pricing'
 
+function getUser(address: string) : User {
+  let user = User.load(address)
+  if(user === null) {
+    user = new User(address)
+    user.save()
+  }
+  return user
+}
 
+function getPoolUser(pool: string, user: string) : PoolUser {
+  let id = `${pool}-${user}`
+  let poolUser = PoolUser.load(id)
+  if(poolUser === null) {
+    poolUser = new PoolUser(id)
+    poolUser.user = user
+    poolUser.pool = pool
+    poolUser.collectedFeesUsd = ZERO_BD
+    poolUser.save()
+  }
+  return poolUser
+}
 
 function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
-
-
   let position = Position.load(tokenId.toString())
   if (position === null) {
     let contract = NonfungiblePositionManager.bind(event.address)
@@ -27,10 +46,11 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
     if (!positionCall.reverted) {
       let positionResult = positionCall.value
       let poolAddress = factoryContract.poolByPair(positionResult.value2, positionResult.value3)
+      let owner = getUser(ADDRESS_ZERO)
 
       position = new Position(tokenId.toString())
       // The owner gets correctly updated in the Transfer handler
-      position.owner = Address.fromString(ADDRESS_ZERO)
+      position.owner = owner.id
       position.pool = poolAddress.toHexString()
       if(poolsList.includes(position.pool)){
         position.token0 = positionResult.value3.toHexString()
@@ -202,6 +222,8 @@ export function handleCollect(event: Collect): void {
   let token0 = Token.load(position.token0)
   let token1 = Token.load(position.token1)
 
+  let owner = getUser(position.owner)
+  let poolUser = getPoolUser(position.pool, owner.id)
 
   let amount1 = ZERO_BD
   let amount0 = ZERO_BD
@@ -217,19 +239,29 @@ export function handleCollect(event: Collect): void {
       amount1 = convertTokenToDecimal(event.params.amount0, token1!.decimals)
     else
       amount1 = convertTokenToDecimal(event.params.amount1, token1!.decimals)
-  
+
 
   position.collectedToken0 = position.collectedToken0.plus(amount0)
   position.collectedToken1 = position.collectedToken1.plus(amount1)
+
+  let prevCollectedFeesToken0 = position.collectedFeesToken0
+  let prevCollectedFeesToken1 = position.collectedFeesToken1
 
   position.collectedFeesToken0 = position.collectedToken0.minus(position.withdrawnToken0)
   position.collectedFeesToken1 = position.collectedToken1.minus(position.withdrawnToken1)
 
   position = updateFeeVars(position, event, event.params.tokenId)
 
-  // recalculatePosition(position)
+  poolUser.collectedFeesUsd = poolUser.collectedFeesUsd.plus(
+    (position.collectedFeesToken0.minus(prevCollectedFeesToken0)).times(token0!.derivedMatic).times(getEthPriceInUSD())
+  ).plus(
+    (position.collectedFeesToken1.minus(prevCollectedFeesToken1)).times(token1!.derivedMatic).times(getEthPriceInUSD())
+  )
+
+  // recalculatePositi5on(position)
 
   position.save()
+  poolUser.save()
 
   savePositionSnapshot(position, event)
 }
@@ -243,7 +275,8 @@ export function handleTransfer(event: Transfer): void {
     return
   }
 
-  position.owner = event.params.to
+  let owner = getUser(event.params.to.toHexString())
+  position.owner = owner.id
   position.save()
 
   savePositionSnapshot(position, event)
