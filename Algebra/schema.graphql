@@ -216,7 +216,7 @@ type Position @entity {
   # NFT token id
   id: ID!
   # owner of the NFT
-  owner: Bytes!
+  owner: User!
   # pool position is within
   pool: Pool!
   # allow indexing by tokens
@@ -259,7 +259,7 @@ type PositionSnapshot @entity {
   # <NFT token id>#<block number>
   id: ID!
   # owner of the NFT
-  owner: Bytes!
+  owner: User!
   # pool the position is within
   pool: Pool!
   # position of which the snap was taken of
@@ -719,4 +719,22 @@ type FeeHourData @entity {
   startFee: BigInt!
   #
   endFee: BigInt! 
+}
+
+type PoolUser @entity {
+  #
+  id: ID!
+  #
+  user: User!
+  #
+  pool: Pool!
+  #
+  collectedFeesUsd: BigDecimal!
+}
+
+type User @entity {
+  #
+  id: ID!
+  #
+  positions: [Position!]! @derivedFrom(field: "owner")
 }
