@@ -126,6 +126,7 @@ export function handlePoolCreated(event: PoolEvent): void {
   pool.createdAtTimestamp = event.block.timestamp
   pool.createdAtBlockNumber = event.block.number
   pool.liquidityProviderCount = ZERO_BI
+  pool.tick = BigInt.fromI32(887617) // maxTick+1, for null cases
   pool.tickSpacing = BigInt.fromI32(60)
   pool.txCount = ZERO_BI
   pool.liquidity = ZERO_BI
