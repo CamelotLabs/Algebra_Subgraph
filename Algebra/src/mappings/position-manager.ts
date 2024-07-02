@@ -8,11 +8,11 @@ import {
 } from '../types/NonfungiblePositionManager/NonfungiblePositionManager'
 import { Position, PositionSnapshot, Token, User, PoolUser } from '../types/schema'
 import { ADDRESS_ZERO, factoryContract, ZERO_BD, ZERO_BI, poolsList} from '../utils/constants'
-import { BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
 import { convertTokenToDecimal, loadTransaction } from '../utils'
 import { getEthPriceInUSD } from '../utils/pricing'
 
-function getUser(address: string) : User {
+function getUser(address: Bytes) : User {
   let user = User.load(address)
   if(user === null) {
     user = new User(address)
@@ -21,8 +21,8 @@ function getUser(address: string) : User {
   return user
 }
 
-function getPoolUser(pool: string, user: string) : PoolUser {
-  let id = `${pool}-${user}`
+function getPoolUser(pool: string, user: Bytes) : PoolUser {
+  let id = Bytes.fromHexString(pool).concat(user)
   let poolUser = PoolUser.load(id)
   if(poolUser === null) {
     poolUser = new PoolUser(id)
@@ -48,7 +48,7 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
     if (!positionCall.reverted) {
       let positionResult = positionCall.value
       let poolAddress = factoryContract.poolByPair(positionResult.value2, positionResult.value3)
-      let owner = getUser(ADDRESS_ZERO)
+      let owner = getUser(Bytes.fromHexString(ADDRESS_ZERO))
 
       position = new Position(tokenId.toString())
       // The owner gets correctly updated in the Transfer handler
@@ -280,7 +280,7 @@ export function handleTransfer(event: Transfer): void {
     return
   }
 
-  let owner = getUser(event.params.to.toHexString())
+  let owner = getUser(event.params.to)
   position.owner = owner.id
   position.save()
 
