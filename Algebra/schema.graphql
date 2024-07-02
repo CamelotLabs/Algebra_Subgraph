@@ -723,7 +723,7 @@ type FeeHourData @entity {
 
 type PoolUser @entity {
   #
-  id: ID!
+  id: Bytes!
   #
   user: User!
   #
@@ -737,7 +737,7 @@ type PoolUser @entity {
 
 type User @entity {
   #
-  id: ID!
+  id: Bytes!
   #
   positions: [Position!]! @derivedFrom(field: "owner")
 }
