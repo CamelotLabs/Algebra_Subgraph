@@ -1,4 +1,4 @@
-import { ZERO_BD, ZERO_BI, ONE_BI } from './constants'
+import { ZERO_BD, ZERO_BI, ONE_BI, FACTORY_ADDRESS } from './constants'
 /* eslint-disable prefer-const */
 import {
   AlgebraDayData,
@@ -14,7 +14,6 @@ import {
   FeeHourData,
   Tick
 } from './../types/schema'
-import { FACTORY_ADDRESS } from './constants'
 import { ethereum, BigInt } from '@graphprotocol/graph-ts'
 
 

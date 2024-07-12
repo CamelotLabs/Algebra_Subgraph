@@ -15,6 +15,7 @@ Before build you need to make a few changes:
 After that you need to run:
 ```
 $ yarn
+$ yarn set-config
 $ yarn codegen
 $ yarn build 
 ```
