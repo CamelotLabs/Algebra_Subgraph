@@ -3,6 +3,7 @@ import { BigDecimal } from '@graphprotocol/graph-ts'
 const ARBITRUM_ONE = "arbitrum-one"
 const ARBITRUM_SEPOLIA = "arbitrum-sepolia"
 const RARI = "camelot-rari"
+const REYA = "camelot-reya"
 const SANKO = "camelot-sanko"
 const XAI = "xai"
 
@@ -47,13 +48,15 @@ class SupportedChains {
   arbitrumOne: ChainInfo;
   arbitrumSepolia: ChainInfo;
   rari: ChainInfo;
+  reya: ChainInfo;
   sanko: ChainInfo;
   xai: ChainInfo;
 
-  constructor(arbitrumOne: ChainInfo, arbitrumSepolia: ChainInfo, rari: ChainInfo, sanko: ChainInfo, xai: ChainInfo) {
+  constructor(arbitrumOne: ChainInfo, arbitrumSepolia: ChainInfo, rari: ChainInfo, reya: ChainInfo, sanko: ChainInfo, xai: ChainInfo) {
     this.arbitrumOne = arbitrumOne;
     this.arbitrumSepolia = arbitrumSepolia;
     this.rari = rari;
+    this.reya = reya;
     this.sanko = sanko;
     this.xai = xai;
   }
@@ -133,6 +136,24 @@ const rari = new ChainInfo(
   "0.0.6"
 )
 
+const reya = new ChainInfo(
+  REYA,
+  "0x10aA510d94E094Bd643677bd2964c3EE085Daffc",
+  "0x30A4bD5b1a9e9C0D80e9a45ef486bc1f1bc8e230",
+  "0x6B48C2e6A32077ec17e8Ba0d98fFc676dfab1A30", // WETH
+  "0x2f7a2808A14368db0c9e20A2f0d0e74D0f65C90B", // WETH-rUSD
+  "0.1",
+  [
+    '0x6B48C2e6A32077ec17e8Ba0d98fFc676dfab1A30', // WETH
+    '0xa9F32a851B1800742e47725DA54a09A7Ef2556A3', // rUSD
+  ],
+  [
+    '0xa9F32a851B1800742e47725DA54a09A7Ef2556A3', // rUSD
+  ],
+  2932166,
+  "0.0.6"
+)
+
 const sanko = new ChainInfo(
   SANKO,
   "0xcF8d0723e69c6215523253a190eB9Bc3f68E0FFa",
@@ -174,12 +195,13 @@ const supportedChains = new SupportedChains(
   arbitrumOne,
   arbitrumSepolia,
   rari,
+  reya,
   sanko,
   xai
 )
 
 // Edit this for the given deployment
-const TARGET_CHAIN: ChainInfo = supportedChains.rari
+const TARGET_CHAIN: ChainInfo = supportedChains.reya
 
 export {
   TARGET_CHAIN
