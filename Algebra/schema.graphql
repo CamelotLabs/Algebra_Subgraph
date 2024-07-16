@@ -731,8 +731,8 @@ type PoolUser @entity {
   #
   collectedFeesUsd: BigDecimal!
   #
-  collectFeesToken0: BigDecimal!
-  collectFeesToken1: BigDecimal!
+  collectedFeesToken0: BigDecimal!
+  collectedFeesToken1: BigDecimal!
 }
 
 type User @entity {

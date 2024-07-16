@@ -29,8 +29,8 @@ function getPoolUser(pool: string, user: Bytes) : PoolUser {
     poolUser.user = user
     poolUser.pool = pool
     poolUser.collectedFeesUsd = ZERO_BD
-    poolUser.collectFeesToken0 = ZERO_BD
-    poolUser.collectFeesToken1 = ZERO_BD
+    poolUser.collectedFeesToken0 = ZERO_BD
+    poolUser.collectedFeesToken1 = ZERO_BD
     poolUser.save()
   }
   return poolUser
@@ -254,8 +254,8 @@ export function handleCollect(event: Collect): void {
 
   position = updateFeeVars(position, event, event.params.tokenId)
 
-  poolUser.collectFeesToken0 = poolUser.collectFeesToken0.plus(position.collectedFeesToken0.minus(prevCollectedFeesToken0))
-  poolUser.collectFeesToken1 = poolUser.collectFeesToken1.plus(position.collectedFeesToken1.minus(prevCollectedFeesToken1))
+  poolUser.collectedFeesToken0 = poolUser.collectedFeesToken0.plus(position.collectedFeesToken0.minus(prevCollectedFeesToken0))
+  poolUser.collectedFeesToken1 = poolUser.collectedFeesToken1.plus(position.collectedFeesToken1.minus(prevCollectedFeesToken1))
 
   poolUser.collectedFeesUsd = poolUser.collectedFeesUsd.plus(
     (position.collectedFeesToken0.minus(prevCollectedFeesToken0)).times(token0!.derivedMatic).times(getEthPriceInUSD())
