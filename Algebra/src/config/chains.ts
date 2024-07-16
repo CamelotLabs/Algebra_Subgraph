@@ -130,7 +130,7 @@ const rari = new ChainInfo(
   ],
   [
     '0xfbda5f676cb37624f28265a144a48b0d6e87d3b6', // USDC
-    '0x362fae9a75b27bbc550aac28a7c1f96c8d483120', // USDC
+    '0x362fae9a75b27bbc550aac28a7c1f96c8d483120', // USDT
   ],
   340548,
   "0.0.6"
@@ -158,8 +158,8 @@ const sanko = new ChainInfo(
   SANKO,
   "0xcF8d0723e69c6215523253a190eB9Bc3f68E0FFa",
   "0x30A4bD5b1a9e9C0D80e9a45ef486bc1f1bc8e230",
-  "0x754cdad6f5821077d6915004be2ce05f93d176f8",
-  "0xacb574808d0556147a27d07945dd9b12da4e7aaf",
+  "0x754cdad6f5821077d6915004be2ce05f93d176f8", // WDMT
+  "0xacb574808d0556147a27d07945dd9b12da4e7aaf", // WDMT-USDC
   "1",
   [
     '0x754cdad6f5821077d6915004be2ce05f93d176f8', // WDMT
@@ -176,8 +176,8 @@ const xai = new ChainInfo(
   XAI,
   "0xD8676fBdfa5b56BB2298D452c9768f51e80e34AE",
   "0xAcDcC3C6A2339D08E0AC9f694E4DE7c52F890Db3",
-  "0x3fb787101dc6be47cfe18aeee15404dcc842e6af",
-  "0xe5a30cc140d2623090a62f64d73d971aac2e03ec",
+  "0x3fb787101dc6be47cfe18aeee15404dcc842e6af", // WXAI
+  "0xe5a30cc140d2623090a62f64d73d971aac2e03ec", // WXAI-USDC
   "1",
   [
     '0x3fb787101dc6be47cfe18aeee15404dcc842e6af', // WXAI
