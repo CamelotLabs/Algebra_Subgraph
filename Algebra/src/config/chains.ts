@@ -2,6 +2,7 @@ import { BigDecimal } from '@graphprotocol/graph-ts'
 
 const ARBITRUM_ONE = "arbitrum-one"
 const ARBITRUM_SEPOLIA = "arbitrum-sepolia"
+const XAI = "xai"
 
 class ChainInfo {
   configName: string;
@@ -43,10 +44,12 @@ class ChainInfo {
 class SupportedChains {
   arbitrumOne: ChainInfo;
   arbitrumSepolia: ChainInfo;
+  xai: ChainInfo;
 
-  constructor(arbitrumOne: ChainInfo, arbitrumSepolia: ChainInfo) {
+  constructor(arbitrumOne: ChainInfo, arbitrumSepolia: ChainInfo, xai: ChainInfo) {
     this.arbitrumOne = arbitrumOne;
     this.arbitrumSepolia = arbitrumSepolia;
+    this.xai = xai;
   }
 }
 
@@ -104,13 +107,33 @@ const arbitrumSepolia = new ChainInfo(
   "0.0.6"
 )
 
+const xai = new ChainInfo(
+  XAI,
+  "0xD8676fBdfa5b56BB2298D452c9768f51e80e34AE",
+  "0xAcDcC3C6A2339D08E0AC9f694E4DE7c52F890Db3",
+  "0x3fb787101dc6be47cfe18aeee15404dcc842e6af",
+  "0xe5a30cc140d2623090a62f64d73d971aac2e03ec",
+  "1",
+  [
+    '0x3fb787101dc6be47cfe18aeee15404dcc842e6af', // WXAI
+    '0x1e3769bd5fb2e9e9e7d4ed8667c947661f9a82e3', // USDC
+    '0xbee82cfdaff4a6aa4e4793cb81eb1c2e79ac463c', // WETH
+  ],
+  [
+    '0x1e3769bd5fb2e9e9e7d4ed8667c947661f9a82e3', // USDC
+  ],
+  2398999,
+  "0.0.6"
+)
+
 const supportedChains = new SupportedChains(
   arbitrumOne,
-  arbitrumSepolia
+  arbitrumSepolia,
+  xai
 )
 
 // Edit this for the given deployment
-const TARGET_CHAIN: ChainInfo = supportedChains.arbitrumOne
+const TARGET_CHAIN: ChainInfo = supportedChains.xai
 
 export {
   TARGET_CHAIN
