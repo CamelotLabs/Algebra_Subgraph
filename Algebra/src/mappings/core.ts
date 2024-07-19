@@ -141,7 +141,7 @@ export function handleMint(event: MintEvent): void {
   factory.totalValueLockedUSD = factory.totalValueLockedMatic.times(bundle.maticPriceUSD)
 
   let transaction = loadTransaction(event)
-  let mint = new Mint(transaction.id.toString() + '#' + pool.txCount.toString())
+  let mint = new Mint(transaction.id.concatI32(pool.txCount.toI32()))
   mint.transaction = transaction.id
   mint.timestamp = transaction.timestamp
   mint.pool = pool.id
@@ -286,7 +286,7 @@ export function handleBurn(event: BurnEvent): void {
 
   // burn entity
   let transaction = loadTransaction(event)
-  let burn = new Burn(transaction.id + '#' + pool.txCount.toString())
+  let burn = new Burn(transaction.id.concatI32(pool.txCount.toI32()))
   burn.transaction = transaction.id
   burn.timestamp = transaction.timestamp
   burn.pool = pool.id
@@ -488,7 +488,7 @@ export function handleSwap(event: SwapEvent): void {
 
   // create Swap event
   let transaction = loadTransaction(event)
-  let swap = new Swap(transaction.id + '#' + pool.txCount.toString())
+  let swap = new Swap(transaction.id.concatI32(pool.txCount.toI32()))
   swap.transaction = transaction.id
   swap.timestamp = transaction.timestamp
   swap.pool = pool.id
