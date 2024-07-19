@@ -2,6 +2,7 @@ import { BigDecimal } from '@graphprotocol/graph-ts'
 
 const ARBITRUM_ONE = "arbitrum-one"
 const ARBITRUM_SEPOLIA = "arbitrum-sepolia"
+const PROOF_OF_PLAY = "camelot-proofofplay-apex"
 const RARI = "camelot-rari"
 const REYA = "camelot-reya"
 const SANKO = "camelot-sanko"
@@ -47,14 +48,16 @@ class ChainInfo {
 class SupportedChains {
   arbitrumOne: ChainInfo;
   arbitrumSepolia: ChainInfo;
+  proofOfPlay: ChainInfo;
   rari: ChainInfo;
   reya: ChainInfo;
   sanko: ChainInfo;
   xai: ChainInfo;
 
-  constructor(arbitrumOne: ChainInfo, arbitrumSepolia: ChainInfo, rari: ChainInfo, reya: ChainInfo, sanko: ChainInfo, xai: ChainInfo) {
+  constructor(arbitrumOne: ChainInfo, arbitrumSepolia: ChainInfo, proofOfPlay: ChainInfo, rari: ChainInfo, reya: ChainInfo, sanko: ChainInfo, xai: ChainInfo) {
     this.arbitrumOne = arbitrumOne;
     this.arbitrumSepolia = arbitrumSepolia;
+    this.proofOfPlay = proofOfPlay;
     this.rari = rari;
     this.reya = reya;
     this.sanko = sanko;
@@ -113,6 +116,24 @@ const arbitrumSepolia = new ChainInfo(
     '0xb893e3334d4bd6c5ba8277fd559e99ed683a9fc7', // USDC
   ],
   2131772,
+  "0.0.6"
+)
+
+const proofOfPlay = new ChainInfo(
+  PROOF_OF_PLAY,
+  "0x10aA510d94E094Bd643677bd2964c3EE085Daffc",
+  "0x30A4bD5b1a9e9C0D80e9a45ef486bc1f1bc8e230",
+  "0x77684A04145a5924eFCE0D92A7c4a2A2E8C359de",
+  "0xCf53A2F62316e9dDA38e34BaB131087e2eF325aE",
+  "0.1",
+  [
+    '0x77684A04145a5924eFCE0D92A7c4a2A2E8C359de', // WETH
+    '0xd7f991cF407C877dc91b2C6aCade45643925cf7a', // USDC
+  ],
+  [
+    '0xd7f991cF407C877dc91b2C6aCade45643925cf7a', // USDC
+  ],
+  26275615,
   "0.0.6"
 )
 
@@ -194,6 +215,7 @@ const xai = new ChainInfo(
 const supportedChains = new SupportedChains(
   arbitrumOne,
   arbitrumSepolia,
+  proofOfPlay,
   rari,
   reya,
   sanko,
@@ -201,7 +223,7 @@ const supportedChains = new SupportedChains(
 )
 
 // Edit this for the given deployment
-const TARGET_CHAIN: ChainInfo = supportedChains.reya
+const TARGET_CHAIN: ChainInfo = supportedChains.proofOfPlay
 
 export {
   TARGET_CHAIN
