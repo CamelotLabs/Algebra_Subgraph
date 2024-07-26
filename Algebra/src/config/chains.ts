@@ -3,6 +3,7 @@ import { BigDecimal } from '@graphprotocol/graph-ts'
 const ARBITRUM_ONE = "arbitrum-one"
 const ARBITRUM_SEPOLIA = "arbitrum-sepolia"
 const PROOF_OF_PLAY = "camelot-proofofplay-apex"
+const GRAVITY = "camelot-gravity"
 const RARI = "camelot-rari"
 const REYA = "camelot-reya"
 const SANKO = "camelot-sanko"
@@ -48,15 +49,17 @@ class ChainInfo {
 class SupportedChains {
   arbitrumOne: ChainInfo;
   arbitrumSepolia: ChainInfo;
+  gravity: ChainInfo;
   proofOfPlay: ChainInfo;
   rari: ChainInfo;
   reya: ChainInfo;
   sanko: ChainInfo;
   xai: ChainInfo;
 
-  constructor(arbitrumOne: ChainInfo, arbitrumSepolia: ChainInfo, proofOfPlay: ChainInfo, rari: ChainInfo, reya: ChainInfo, sanko: ChainInfo, xai: ChainInfo) {
+  constructor(arbitrumOne: ChainInfo, arbitrumSepolia: ChainInfo, gravity: ChainInfo, proofOfPlay: ChainInfo, rari: ChainInfo, reya: ChainInfo, sanko: ChainInfo, xai: ChainInfo) {
     this.arbitrumOne = arbitrumOne;
     this.arbitrumSepolia = arbitrumSepolia;
+    this.gravity = gravity;
     this.proofOfPlay = proofOfPlay;
     this.rari = rari;
     this.reya = reya;
@@ -116,6 +119,28 @@ const arbitrumSepolia = new ChainInfo(
     '0xb893e3334d4bd6c5ba8277fd559e99ed683a9fc7', // USDC
   ],
   2131772,
+  "0.0.6"
+)
+
+const gravity = new ChainInfo(
+  GRAVITY,
+  "0x10aA510d94E094Bd643677bd2964c3EE085Daffc",
+  "0x30A4bD5b1a9e9C0D80e9a45ef486bc1f1bc8e230",
+  "0xBB859E225ac8Fb6BE1C7e38D87b767e95Fef0EbD",
+  "0xa3FfAc3EBFA18b5BC4f2Ae10086403E85FBF6b2B",
+  "100",
+  [
+    "0xBB859E225ac8Fb6BE1C7e38D87b767e95Fef0EbD", // WG
+    "0xFbDa5F676cB37624f28265A144A48B0d6e87d3b6", // USDC
+    "0x816E810f9F787d669FB71932DeabF6c83781Cd48", // USDT
+    "0xf6f832466Cd6C21967E0D954109403f36Bc8ceaA", // WETH
+    "0x729ed87bbE7B7e4B7F09BCb9c668580818d98BB9", // WBTC
+    "0xBFBBc4dA47508e85AC18DFC961fa182194E85f9a", // DAI
+  ],
+  [
+    '0xFbDa5F676cB37624f28265A144A48B0d6e87d3b6', // USDC
+  ],
+  11988,
   "0.0.6"
 )
 
@@ -215,6 +240,7 @@ const xai = new ChainInfo(
 const supportedChains = new SupportedChains(
   arbitrumOne,
   arbitrumSepolia,
+  gravity,
   proofOfPlay,
   rari,
   reya,
@@ -223,7 +249,7 @@ const supportedChains = new SupportedChains(
 )
 
 // Edit this for the given deployment
-const TARGET_CHAIN: ChainInfo = supportedChains.proofOfPlay
+const TARGET_CHAIN: ChainInfo = supportedChains.gravity
 
 export {
   TARGET_CHAIN
