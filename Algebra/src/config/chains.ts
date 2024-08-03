@@ -40,8 +40,8 @@ class ChainInfo {
     this.wrappedNative = wrappedNative.toLowerCase();
     this.wrappedNativeUSDCPool = wrappedNativeUSDCPool.toLowerCase();
     this.minimumMaticLocked = minimumMaticLocked;
-    this.whitelistTokens = whitelistTokens;
-    this.stableCoins = stableCoins;
+    this.whitelistTokens = whitelistTokens.map<string>((t: string): string => t.toLowerCase());
+    this.stableCoins = stableCoins.map<string>((t: string): string => t.toLowerCase());
     this.startBlock = startBlock;
     this.apiVersion = apiVersion;
   }
