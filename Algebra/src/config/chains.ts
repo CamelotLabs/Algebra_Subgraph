@@ -8,6 +8,7 @@ const GRAVITY = "camelot-gravity"
 const RARI = "camelot-rari"
 const REYA = "camelot-reya"
 const SANKO = "camelot-sanko"
+const WINR = "camelot-winr"
 const XAI = "xai"
 
 class ChainInfo {
@@ -56,9 +57,10 @@ class SupportedChains {
   rari: ChainInfo;
   reya: ChainInfo;
   sanko: ChainInfo;
+  winr: ChainInfo;
   xai: ChainInfo;
 
-  constructor(arbitrumOne: ChainInfo, arbitrumSepolia: ChainInfo, gravity: ChainInfo, molten: ChainInfo, proofOfPlay: ChainInfo, rari: ChainInfo, reya: ChainInfo, sanko: ChainInfo, xai: ChainInfo) {
+  constructor(arbitrumOne: ChainInfo, arbitrumSepolia: ChainInfo, gravity: ChainInfo, molten: ChainInfo, proofOfPlay: ChainInfo, rari: ChainInfo, reya: ChainInfo, sanko: ChainInfo, winr: ChainInfo, xai: ChainInfo) {
     this.arbitrumOne = arbitrumOne;
     this.arbitrumSepolia = arbitrumSepolia;
     this.gravity = gravity;
@@ -67,6 +69,7 @@ class SupportedChains {
     this.rari = rari;
     this.reya = reya;
     this.sanko = sanko;
+    this.winr = winr;
     this.xai = xai;
   }
 }
@@ -240,6 +243,28 @@ const sanko = new ChainInfo(
   "0.0.6"
 )
 
+const winr = new ChainInfo(
+  WINR,
+  "0x10aA510d94E094Bd643677bd2964c3EE085Daffc",
+  "0xC216fCdEb961EEF95657Cb45dEe20e379C7624B8",
+  "0xBF6FA9d2BF9f681E7b6521b49Cf8ecCF9ad8d31d",
+  "0x502514c2Cb38813b33b32ee56bEE09c0C448D79E",
+  "100",
+  [
+    "0xBF6FA9d2BF9f681E7b6521b49Cf8ecCF9ad8d31d", // WWINR
+    "0x59edbB343991D30f77dcdBad94003777e9B09BA9", // USDC
+    "0x0381132632E9E27A8f37F1bc56bd5a62d21a382B", // USDT
+    "0xE60256921AE414D7B35d6e881e47931f45E027cf", // WETH
+    "0x44BD533C211C78e01f0F738826e8b18Bb9b936f5", // WBTC
+  ],
+  [
+    '0x59edbB343991D30f77dcdBad94003777e9B09BA9', // USDC
+    '0x0381132632E9E27A8f37F1bc56bd5a62d21a382B', // USDT
+  ],
+  1258618,
+  "0.0.6"
+)
+
 const xai = new ChainInfo(
   XAI,
   "0xD8676fBdfa5b56BB2298D452c9768f51e80e34AE",
@@ -268,11 +293,12 @@ const supportedChains = new SupportedChains(
   rari,
   reya,
   sanko,
+  winr,
   xai
 )
 
 // Edit this for the given deployment
-const TARGET_CHAIN: ChainInfo = supportedChains.molten
+const TARGET_CHAIN: ChainInfo = supportedChains.winr
 
 export {
   TARGET_CHAIN
