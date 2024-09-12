@@ -205,7 +205,6 @@ export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
   position.withdrawnToken1 = position.withdrawnToken1.plus(amount1)
 
   position = updateFeeVars(position, event, event.params.tokenId)
-  // recalculatePosition(position)
 
   position.save()
 
@@ -280,6 +279,7 @@ export function handleTransfer(event: Transfer): void {
     return
   }
 
+  position.prevOwner = position.owner
   let owner = getUser(event.params.to)
   position.owner = owner.id
   position.save()
